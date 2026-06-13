@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ resume.name }} - Standard Resume</title>
+    <!-- Bring in Bootstrap for layout -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Uses highly standard, traditional fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', Arial, sans-serif;
+            padding: 40px 0;
+            color: #212529;
+        }
+        
+        /* The traditional 8.5x11 paper look */
+        .resume-paper {
+            background: white;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 60px 80px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid #343a40; /* Very professional dark grey top */
+        }
+        
+        .resume-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .resume-name {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: #212529;
+        }
+        
+        /* Inline contact bar with pipe separators */
+        .contact-info {
+            font-size: 1rem;
+            color: #495057;
+        }
+        
+        .contact-info a {
+            color: #495057;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Classic thin horizontal line under sections */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #343a40;
+            border-bottom: 1px solid #343a40;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .content-text {
+            white-space: pre-line;
+            line-height: 1.6;
+            font-size: 1rem;
+            text-align: justify;
+        }
+        
+        .item-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #212529;
+        }
+        
+        .item-subtitle {
+            font-weight: 700;
+            font-style: italic;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FLOATING "GO BACK" BUTTON
+    <a href="{% url 'home' %}" class="btn btn-dark shadow-sm px-3 py-2 fw-bold text-white" style="position: fixed; top: 20px; left: 20px; z-index: 9999; border-radius: 50px; text-decoration: none;">
+        ← Go Back
+    </a> -->
+    {% if current_role == 'teacher' %}
+        <!-- If it is a teacher, send them directly to the home page -->
+        <a href="{% url 'home' %}" class="btn btn-dark shadow-sm px-3 py-2 fw-bold text-white" style="position: fixed; top: 20px; left: 20px; z-index: 9999; border-radius: 50px; text-decoration: none;">
+            ← Go to Home
+        </a>
+    {% else %}
+    <!-- SUCCESS POPUP MESSAGES -->
+    {% if messages %}
+        <div class="container mt-4" style="max-width: 800px; position: relative; z-index: 9999;">
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show shadow" role="alert" style="border-radius: 10px;">
+                    <i class="bi bi-check-circle-fill me-2"></i> <strong>Success!</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+        <!-- If it is a student, let them use standard browser back navigation -->
+        <a href="{% url 'resume_page' %}" class="btn btn-dark shadow-sm px-3 py-2 fw-bold text-white" style="position: fixed; top: 20px; left: 20px; z-index: 9999; border-radius: 50px; text-decoration: none;">
+            ← Go Back
+        </a>
+    {% endif %}
+
+    <div class="resume-paper">
+        
+        <!-- HEADER -->
+        <div class="resume-header">
+            <h1 class="resume-name">{{ resume.name|title }}</h1>
+            <div class="contact-info">
+                {{ resume.email }} &nbsp;|&nbsp; {{ resume.phone }}
+                {% if resume.linkedin %} &nbsp;|&nbsp; <a href="{{ resume.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
+                {% if resume.github %} &nbsp;|&nbsp; <a href="{{ resume.github }}" target="_blank">GitHub</a>{% endif %}
+            </div>
+        </div>
+
+        <!-- PROFESSIONAL SUMMARY -->
+        {% if resume.summary %}
+        <div class="mb-4">
+            <p class="content-text">{{ resume.summary }}</p>
+        </div>
+        {% endif %}
+
+        <!-- EDUCATION -->
+        <h2 class="section-title">Education</h2>
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-baseline">
+                <div class="item-title">{{ resume.college }}</div>
+            </div>
+            <div class="item-subtitle">{{ resume.branch }}</div>
+            <p class="content-text">{{ resume.education }}</p>
+        </div>
+
+        <!-- TECHNICAL SKILLS -->
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="mb-4">
+            <p class="content-text fw-bold">{{ resume.skills }}</p>
+        </div>
+
+        <!-- EXPERIENCE -->
+        <h2 class="section-title">Professional Experience</h2>
+        <div class="mb-4">
+            <p class="content-text">{{ resume.experience|default:"No formal experience listed." }}</p>
+        </div>
+
+        <!-- PROJECTS -->
+        {% if resume.projects %}
+        <h2 class="section-title">Projects</h2>
+        <div class="mb-4">
+            <p class="content-text">{{ resume.projects }}</p>
+        </div>
+        {% endif %}
+        
+
+        <!-- CERTIFICATIONS -->
+        {% if resume.certifications %}
+        <h2 class="section-title">Certifications & Achievements</h2>
+        <div class="mb-4">
+            <p class="content-text">{{ resume.certifications }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+    {% if current_user == resume.profile.username %}
+    <div class="text-center mt-5">
+        <div class="btn-group shadow-lg" style="border: 3px solid #2d3436; border-radius: 15px; overflow: hidden;">
+            <a href="?theme=1" class="btn btn-light fw-bold fs-4 py-3 px-5 border-end border-secondary">Standard</a>
+            <a href="?theme=2" class="btn btn-light fw-bold fs-4 py-3 px-5 border-end  border-secondary">Modern</a>
+            <a href="?theme=3" class="btn btn-light fw-bold fs-4 py-3 px-5 border-end border-secondary">Creative</a>
+        </div>
+    </div>
+    {% endif %}
+    {% if current_user and current_user != resume.profile.username %}
+        <div class="text-center mt-4 mb-4">
+            <form action="{% url 'send_request' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="sender" value="{{ current_user }}">
+                <input type="hidden" name="receiver" value="{{ resume.profile.username }}">
+                
+                <button type="submit" class="btn btn-primary shadow-sm fw-bold px-5 py-2" style="border-radius: 50px; font-size: 1.1rem;">
+                    <i class="bi bi-person-plus-fill me-2"></i> Send Request
+                </button>
+            </form>
+        </div>
+        {% endif %}
+</body>
+</html>

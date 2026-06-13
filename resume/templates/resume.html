@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Build Your Resume</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;700&display=swap');
+        body { 
+            background-color: #fdfbf7 !important; 
+            font-family: 'Nunito', sans-serif; 
+            font-size: 1.1rem; 
+        }
+        
+        
+        h1, h2, h3, h4, h5, h6, .fw-bold, label, .btn { 
+            font-family: 'Nunito', sans-serif !important; 
+            letter-spacing: 1.5px; 
+            color: #2d3436;
+        }
+
+        
+        h1 { font-size: 3.5rem !important; }
+        h3 { font-size: 2rem !important; margin-bottom: 1.5rem !important;}
+        
+        
+        label { font-size: 1.6rem; font-weight: 600; margin-bottom: 0.5rem;}
+
+        
+        .card, .btn, .form-control {
+            /* Irregular border radius for that sketched look */
+            border: 3px solid #2d3436 !important; /* Thicker borders */
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px !important;
+            box-shadow: 6px 6px 0px rgba(45, 52, 54, 0.2) !important; /* Harsher shadow */
+            background-color: white;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Styling the inputs themselves to look more like writing areas */
+        .form-control {
+            font-family: 'Nunito', sans-serif; /* Keep inputs readable */
+            font-size: 1.1rem;
+            padding: 12px 15px;
+            background-color: #faf9f6; /* Off-white inside inputs */
+        }
+
+        /* Make text boxes glow blue when typing */
+        .form-control:focus {
+            box-shadow: 8px 8px 0px rgba(13, 202, 240, 0.5) !important;
+            outline: none;
+            border-color: #0dcaf0 !important;
+            transform: translate(-2px, -2px); /* Slight lift when typing */
+        }
+
+        /* Button hover effects */
+        .btn {
+            font-size: 1.5rem; /* Bigger button text */
+            padding: 10px 25px;
+        }
+        
+        .btn:hover { 
+            transform: translate(-3px, -3px); 
+            box-shadow: 8px 8px 0px rgba(45, 52, 54, 0.3) !important; 
+        }
+
+        /* Themed sections styling */
+        .text-info { color: #0984e3 !important; } /* Deeper blue for section headers */
+        
+        /* Preview Section Styling */
+        .preview-card-title {
+            font-size: 1.8rem;
+        }
+        .preview-card-desc {
+            font-family: 'Nunito', sans-serif !important;
+            font-size: 1.1rem;
+        }
+        
+            
+    </style>
+</head>
+<body>
+
+    <div class="container py-5" style="max-width: 900px;">
+        
+        <div class="text-center mb-5">
+            <h1 class="display-3 fw-bold text-primary">Craft Your Resume</h1>
+            <p class="text-muted fs-5" style="font-family: 'Nunito', sans-serif;">Fill out the details below to generate your professional portfolio.</p>
+        </div>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            <div class="card p-4 mb-5 shadow-sm">
+                
+                <h3 class="border-bottom pb-2 mb-3 text-info">📝 Personal Info</h3>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label>Full Name</label>
+                        <input type="text" name="name" class="form-control" value="{{ resume.name|default:'' }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="form-control" value="{{ resume.email|default:'' }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone" class="form-control" value="{{ resume.phone|default:'' }}" required>
+                    </div>
+                </div>
+                <!-- Put this right after your Personal Info section -->
+<h3 class="border-bottom pb-2 mb-3 text-info mt-4">🔗 Professional Links</h3>
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label>LinkedIn Profile URL</label>
+        <input type="url" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/yourname" value="{{ resume.linkedin|default:'' }}">
+    </div>
+    <div class="col-md-6">
+        <label>GitHub / Portfolio URL</label>
+        <input type="url" name="github" class="form-control" placeholder="https://github.com/yourusername" value="{{ resume.github|default:'' }}">
+    </div>
+</div>
+
+<!-- Put this before your Education section -->
+<h3 class="border-bottom pb-2 mb-3 text-info mt-4">📝 Professional Summary</h3>
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <label>Summary / Objective</label>
+        <textarea name="summary" class="form-control" rows="3" placeholder="e.g., Highly motivated ENTC student with a strong foundation in C/C++ looking for an entry-level software development role...">{{ resume.summary|default:'' }}</textarea>
+    </div>
+</div>
+
+<!-- Put this right after your Skills section -->
+<h3 class="border-bottom pb-2 mb-3 text-info mt-4">🚀 Projects & Certifications</h3>
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <label>Academic & Personal Projects</label>
+        <textarea name="projects" class="form-control" rows="4" placeholder="e.g., Built a thermodynamic properties calculator using C... ">{{ resume.projects|default:'' }}</textarea>
+    </div>
+    <div class="col-12 mt-3">
+        <label>Certifications & Achievements</label>
+        <textarea name="certifications" class="form-control" rows="3" placeholder="e.g., Industrial Hazards & Process Safety Certification, 1st Place College Hackathon">{{ resume.certifications|default:'' }}</textarea>
+    </div>
+</div>
+                <h3 class="border-bottom pb-2 mb-3 text-info mt-4">🎓 Academic Details</h3>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label>College / University</label>
+                        <input type="text" name="college" class="form-control" value="{{ resume.college|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Branch / Department</label>
+                        <input type="text" name="branch" class="form-control" value="{{ resume.branch|default:'' }}" required>
+                    </div>
+                    <div class="col-12">
+                        <label>Education Details (Degree, Year, Grades)</label>
+                        <textarea name="education" class="form-control" rows="3" required>{{ resume.education|default:'' }}</textarea>
+                    </div>
+                </div>
+
+                <h3 class="border-bottom pb-2 mb-3 text-info mt-4">💡 Skills & Experience</h3>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label>Core Skills (comma separated)</label>
+                        <input type="text" name="skills" class="form-control" placeholder="e.g. Python, Machine Learning, UI Design" value="{{ resume.skills|default:'' }}" required>
+                    </div>
+                    <div class="col-12">
+                        <label>Experience & Projects</label>
+                        <textarea name="experience" class="form-control" rows="4" required>{{ resume.experience|default:'' }}</textarea>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- THEME SELECTOR -->
+            <h3 class="border-bottom pb-2 mb-3 text-info mt-5">🎨 Final Resume Theme</h3>
+            <div class="row g-3 mb-5">
+                <div class="col-12">
+                    <label>Which theme should teachers see?</label>
+                    <select name="theme" class="form-control" style="cursor: pointer; background-color: #e0f7fa; border-color: #0dcaf0;">
+                        <option value="1" {% if resume.theme == '1' %}selected{% endif %}>Standard (Corporate & Clean)</option>
+                        <option value="2" {% if resume.theme == '2' %}selected{% endif %}>Modern (Dark Sidebar Style)</option>
+                        <option value="3" {% if resume.theme == '3' %}selected{% endif %}>Elegant (Blue Accent & Badges)</option>
+                    </select>
+                    <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle me-1"></i>This is the exact layout teachers will see when they click your profile in the directory.</small>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-5 mt-4">
+                <button type="reset" class="btn btn-outline-danger px-4 fw-bold">Clear Form</button>
+                 <a href="{% url 'home' %}" class="btn btn-dark shadow-sm px-3 py-2 fw-bold" style="position: fixed; top: 20px; left: 20px; z-index: 9999; border-radius: 50px; text-decoration: none;">
+                ← Go Back
+                 </a>
+                <button type="submit" class="btn px-5 fw-bold" style="background-color: #00b894; color: #2d3436;">Save Resume Data</button>
+            </div>
+            
+        </form>
+
+        {% if resume %}
+        <div class="card p-4 mb-5 border-0 shadow-sm" style="background-color: #e0f7fa;">
+            <h3 class="text-center mb-3">🎨 Preview Your Resume</h3>
+            <p class="text-center text-muted mb-4">Click any theme below to instantly open your resume in a new tab!</p>
+            
+            <div class="row g-4">
+                
+                <div class="col-md-4 text-center">
+                    <a href="{% url 'resume_detail' resume.id %}?theme=1" target="_blank" class="text-decoration-none">
+                        <div class="card p-4 w-100 text-center" style="transition: transform 0.2s;">
+                            <h4 class="mb-0 text-primary">Standard</h4>
+                            <small class="text-muted" style="font-family: 'Nunito', sans-serif;">Clean & Simple</small>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="col-md-4 text-center">
+                    <a href="{% url 'resume_detail' resume.id %}?theme=2" target="_blank" class="text-decoration-none">
+                        <div class="card p-4 w-100 text-center" style="transition: transform 0.2s;">
+                            <h4 class="mb-0 text-primary">Modern</h4>
+                            <small class="text-muted" style="font-family: 'Nunito', sans-serif;">Dark Sidebar</small>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="col-md-4 text-center">
+                    <a href="{% url 'resume_detail' resume.id %}?theme=3" target="_blank" class="text-decoration-none">
+                        <div class="card p-4 w-100 text-center" style="background-color: #ffeaa7; transition: transform 0.2s;">
+                            <h4 class="mb-0 text-dark">Creative</h4>
+                            <small class="text-muted" style="font-family: 'Nunito', sans-serif;">Hand-Drawn Layout</small>
+                        </div>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</body>
+</html>
+
+            

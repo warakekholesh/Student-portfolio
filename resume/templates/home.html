@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+body{
+    background:#f5f7fb;
+    font-size:18px;
+}
+
+.container-fluid{
+    max-width:1800px;
+}
+
+.card{
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.list-group-item{
+    font-size:18px;
+}
+
+.btn{
+    font-size:18px;
+}
+
+h1{
+    font-size:3rem;
+}
+
+h4{
+    font-size:2rem;
+}
+</style>
+</head>
+<body>  
+   
+    <div class="bg-primary text-white py-5 mb-5 shadow-sm"
+     style="border-bottom:10px solid #0dcaf0; min-height:320px;">
+     <!-- HOME PAGE SUCCESS MESSAGE (Inside Blue Header) -->
+        {% if messages %}
+            <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 600px;">
+                {% for message in messages %}
+                    <div class="alert bg-white text-success alert-dismissible fade show shadow-lg" role="alert" style="border-radius: 12px; font-weight: bold; border: none;">
+                        <i class="bi bi-check-circle-fill me-2 fs-5" style="vertical-align: middle;"></i> 
+                        <span style="vertical-align: middle;">{{ message }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-top: 2px;"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    <div class="container-fluid px-5 d-flex align-items-center">
+        <div class="rounded-circle bg-white text-primary d-flex justify-content-center align-items-center me-4 shadow-lg" style="width: 220px; height: 220px; font-size: 7.5rem; font-weight: bold;">
+            {{ logged_in_user|make_list|first|upper }}
+        </div>
+        <div class="flex-grow-1">
+            <h1 class="fw-bold mb-4 display-5">{{ logged_in_user|title }}</h1>
+            {% if my_info %}
+                <p class="mb-0 fs-4 text-white-50">
+                    <i class="bi bi-mortarboard-fill text-warning me-2"></i> {{ my_info.college }} <span class="mx-2 text-white-25">|</span> {{ my_info.branch }}
+                </p>
+            {% else %}
+                <p class="mb-0 fs-5 text-white-50"><i class="bi bi-info-circle me-2"></i> Please update your resume to show your college details here.</p>
+            {% endif %}
+        </div>
+        <div class="ms-auto">
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-lg fw-bold shadow rounded-pill px-5 py-3">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
+<div class="container-fluid px-5 pb-5">
+    <div class="row mb-5 g-4">
+        <div class="col-md-6">
+            <a href="{% url 'resume_page' %}" class="btn border-0 bg-white shadow-lg w-100 py-4 rounded-4 text-start d-flex align-items-center table-hover transition" style="transition: transform 0.2s;">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-4"><i class="bi bi-pencil-square fs-4"></i></div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-1">Update My Resume</h4>
+                    <medim class="text-muted"> Edit your college and professional details</medium>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-6 col-xl-6">
+            <button class="btn border-0 bg-white shadow-lg w-100 py-4 rounded-4 text-start d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#notificationModal" style="transition: transform 0.2s;">
+                <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 me-4"><i class="bi bi-bell-fill fs-4"></i></div>
+                <div class="flex-grow-1">
+                    <h4 class="fw-bold text-dark mb-1">Pending Requests</h4>
+                    <medinm class="text-muted">Check responses from teachers</medium>
+                </div>
+                {% if notifications %}
+                    <span class="badge bg-danger rounded-pill fs-6 ms-3">{{ notifications|length }}</span>
+                {% endif %}
+            </button>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4">
+                    <h4 class="fw-bold text-dark mb-0"><i class="bi bi-people-fill text-success me-2"></i> My Network</h4>
+                </div>
+                <div class="card-body p-4">
+                    {% if accepted_requests %}
+                        <div class="list-group list-group-flush">
+                            {% for req in accepted_requests %}
+                                <div class="list-group-item px-0 py-3 border-bottom">
+                                    {% if req.sender == logged_in_user %}
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        <span class="fw-bold text-primary">{{ req.receiver|title }}</span> accepted your {{ req.request_type }} request!
+                                    {% else %}
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        You accepted <span class="fw-bold text-primary">{{ req.sender|title }}</span>'s {{ req.request_type }} request!
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 text-muted bg-light rounded-3 mt-2">
+                            <i class="bi bi-person-x fs-1 opacity-50 mb-3 d-block"></i>
+                            <p class="mb-5 fw-bold">No connections yet</p>
+                            <medium>Send a request to a teacher to get started!</medium>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 h-100 rounded-4">
+                <div class="card-header bg-white border-bottom-0 p-4">
+                    <h4 class="fw-bold text-dark mb-0"><i class="bi bi-person-badge-fill text-warning me-2"></i> Connect with Teachers</h4>
+                </div>
+                <div class="card-body p-5">
+                    {% if teachers_list %}
+                        <div class="list-group">
+                            {% for teacher in teachers_list %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 shadow-sm mb-3 rounded-3 bg-light">
+                                    <div>
+                                        <a href="{% url 'teacher_profile' teacher.username %}" class="text-decoration-none">
+                                            <h4 class="mb-0 fw-bold text-primary">{{ teacher.username|title }} <i class="bi bi-box-arrow-up-right text-muted ms-1" style="font-size: 0.8rem;"></i></h4>
+                                        </a>
+                                        <small class="text-muted">Faculty Member</small>
+                                    </div>
+                                    
+                                    <form method="POST" action="{% url 'research_request' %}" class="m-0">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="receiver" value="{{ teacher.username }}">
+                                        <input type="hidden" name="request_type" value="Mentorship">
+                                        <button type="submit" class="btn btn-primary btn-lg fw-bold px-4 rounded-pill shadow">
+                                            Send Request
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 text-muted bg-light rounded-3 mt-2">
+                            <p class="mb-0 fw-bold">No teachers available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'notification_modal.html' %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+       
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find all alert messages on the page
+            var alerts = document.querySelectorAll('.alert');
+            
+            alerts.forEach(function(alert) {
+                // Set a timer for 3 seconds (3000 milliseconds)
+                setTimeout(function() {
+                    // Remove the 'show' class to trigger Bootstrap's fade out animation
+                    alert.classList.remove('show');
+                    
+                    // Wait 150ms for the fade animation to finish, then remove it from the page completely
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 150);
+                    
+                }, 3000); // <-- You can change this number! 5000 = 5 seconds
+            });
+        });
+    </script>
+</body>
+</html>

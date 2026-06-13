@@ -1,0 +1,33 @@
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold">Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% if notifications %}
+                    {% for req in notifications %}
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                        <div>
+                            <strong>{{ req.sender }}</strong> sent a {{ req.request_type }} request.
+            </div>
+            
+            {% if req.status == 'accepted' %}
+                <span class="badge bg-success px-3 py-2">Accepted</span>
+                
+            {% else %}
+                <a href="{% url 'accept_request' req.id %}" class="btn btn-sm btn-primary fw-bold shadow-sm">
+                    Accept
+                </a>
+            {% endif %}
+            
+        </div>
+    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center my-3">You have no new requests right now.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
